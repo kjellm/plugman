@@ -7,7 +7,7 @@ Spec = Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'plugman'
   s.version     = begin
-                    v = '0.0'
+                    v = '0.1'
                     origin_master_commits = `git rev-list origin/master`.split("\n")
                     v << '.' << origin_master_commits.length.to_s
                   end
