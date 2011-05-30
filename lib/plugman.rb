@@ -35,6 +35,8 @@ class Plugman
       @plugins.select {|p| p.respond_to?(method)}.each do |p|
         p.send(method, *arguments)
       end
+    else
+      super
     end
   end
 

@@ -12,6 +12,10 @@ class Foo < Test::Unit::TestCase
     pm.send_before_big_bang(str)
     assert(str =~ /WHOOOP/)
     assert(str =~ /WHIIIIIIIIIIZZZZZZZZ/)
+
+    assert_raise NoMethodError do
+      pm.this_should_be_missing
+    end
   end
 
 end
