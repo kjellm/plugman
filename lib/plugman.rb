@@ -2,22 +2,28 @@
 
 require 'plugman/finder'
 require 'plugman/plugin_base'
+require 'logger'
+require 'stringio'
 
 class Plugman
 
   def initialize(finder)
     @finder  = finder
     @plugins = []
+    @log = StringIO.new("")
+    @logger = Logger.new(@log)
     Plugman::PluginBase.manager = self
   end
 
+  def log 
+    @log.string
+  end
+
   def load_plugins
-    begin
-      @finder.plugin_files.each {|f| require f }
-    rescue => e
-      warn e
+    @finder.plugin_files.each do |f|
+      require_plugin(f)
     end
-    
+
     # All plugins are now registered. Requiering the plugins will
     # magically call Plugman::Plugin::inherited for each
     # plugin. inherited() will in turn call register_plugin()
@@ -41,5 +47,16 @@ class Plugman
   end
 
   # FIX implement respond_to? to match method_missing?
+
+  private
+
+
+  def require_plugin(f)
+    @logger.debug "Requiering #{f}"
+    require f
+  rescue => e
+    @logger.error(e.class.to_s + ": " + e.message)
+  end
+
 
 end
