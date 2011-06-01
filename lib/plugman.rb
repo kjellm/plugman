@@ -7,8 +7,12 @@ require 'stringio'
 
 class Plugman
 
-  def initialize(finder)
-    @finder  = finder
+  def initialize(finder_or_name)
+    if finder_or_name.is_a?(String)
+      @finder = Finder::Standard.new(finder_or_name)
+    else
+      @finder = finder
+    end
     @plugins = []
     @log = StringIO.new("")
     @logger = Logger.new(@log)

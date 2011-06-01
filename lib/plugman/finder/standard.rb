@@ -1,12 +1,11 @@
-
 require 'rubygems'
 
 class Plugman
   module Finder
     class Standard
 
-      def initialize(glob)
-        @glob = glob
+      def initialize(name)
+        @glob = "#{name}/plugin/*"
       end
 
       def plugin_files
