@@ -12,12 +12,13 @@ class Plugman
       def plugin_files
         # FIX assuming here that array is sorted correctly. Assumption correct?
         seen = {}
-        Gem.find_files(@plugin_glob, true).each do |p|
+        files = []
+        Gem.find_files(@glob, true).each do |p|
           name = File.basename(p)
-          require p unless seen[name]
+          files << p unless seen[name]
           seen[name] = true
         end
-
+        files
       end
 
     end
