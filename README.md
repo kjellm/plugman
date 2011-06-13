@@ -45,7 +45,7 @@ Report bugs to <http://github.com/kjellm/plugman/issues>
 Author
 ------
 
-Kjell-Magne Øierud <kjellm AT acm DOT org>
+Kjell-Magne Øierud &lt;kjellm AT acm DOT org&gt;
 
 
 License
