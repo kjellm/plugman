@@ -8,11 +8,7 @@ require 'stringio'
 class Plugman
 
   def initialize(finder_or_name)
-    if finder_or_name.is_a?(String)
-      @finder = Finder::Standard.new(finder_or_name)
-    else
-      @finder = finder
-    end
+    self.finder = finder_or_name
     @plugins = []
     @log = StringIO.new("")
     @logger = Logger.new(@log)
@@ -54,6 +50,15 @@ class Plugman
 
   private
 
+  def finder=(finder_or_name)
+    if finder_or_name.is_a?(String)
+      @finder = Finder::Standard.new(finder_or_name)
+    elsif finder_or_name.respond_to?(:plugin_files)
+      @finder = finder_or_name
+    else
+      raise ArgumentError 'Require a string or an object repsonding to plugin_files()'
+    end
+  end
 
   def require_plugin(f)
     @logger.debug "Requiering #{f}"
