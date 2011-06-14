@@ -5,6 +5,42 @@ require 'plugman/plugin_base'
 require 'logger'
 require 'stringio'
 
+#
+# Plugman is a plugin manager that supports event driven communication
+# with plugins. It handles the loading, initialization and all
+# communications with the plugins.
+#
+# To call a method on the registered plugins, call plugman with a
+# method name matching 
+# 
+#   /^send_(before|after|at|.*_hook$)/
+#
+# plugman will then call similar named (without send_) methods on all
+# plugins which responds to the method.
+#
+# === Example
+#
+# Put some plugins in lib/your_app/plugin/. For documentation on
+# writing plugins, see link:Plugman/PluginBase.html
+#
+#   require 'plugman'
+#  
+#   class YourApp
+#
+#     def initialize
+#       @pm = Plugman.new('your_app')
+#       @pm.load_plugins
+#     end
+#
+#     def main
+#       @pm.send_at_starup
+#
+#       # ...
+#    
+#       @pm.send_before_bar
+#     end
+#
+
 class Plugman
 
   def initialize(finder_or_name)
@@ -19,6 +55,8 @@ class Plugman
     @log.string
   end
 
+  # Looks for plugins, requires them, checks state, initializes, and
+  # registers the plugins
   def load_plugins
     @finder.plugin_files.each do |f|
       require_plugin(f)
@@ -31,10 +69,7 @@ class Plugman
     @plugins = @plugins.select {|p| p.state_ok? }
   end
 
-  def register_plugin(klass)
-    @plugins.push(klass.new)
-  end
-
+  # Calls the 
   def method_missing(name, *arguments, &block)
     if name.to_s =~ /^send_(before|after|at|.*_hook$)/
       method = name.to_s[5..-1]
@@ -49,6 +84,10 @@ class Plugman
   # FIX implement respond_to? to match method_missing?
 
   private
+
+  def register_plugin(klass)
+    @plugins.push(klass.new)
+  end
 
   def finder=(finder_or_name)
     if finder_or_name.is_a?(String)

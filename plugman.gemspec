@@ -12,7 +12,7 @@ Spec = Gem::Specification.new do |s|
                     v << '.' << origin_master_commits.length.to_s
                   end
   s.summary     = 'A plugin manager.'
-  s.description = 'FIX'
+  s.description = 'Plugman is a plugin manager that supports event driven communication with plugins. It handles the loading, initialization and all communications with the plugins.'
   s.homepage    = 'http://github.com/kjellm/plugman'
   s.author      = 'Kjell-Magne Øierud'
   s.email       = 'kjellm@acm.org'

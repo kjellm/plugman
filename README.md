@@ -23,7 +23,7 @@ If you want to track the latest changes
 Usage
 -----
 
-See <http://rubydoc.info/gems/plugman/Plugman>
+See the API documentation at <http://rubydoc.info/gems/plugman/>.
 
 Alternatives
 ------------
