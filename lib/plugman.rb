@@ -13,9 +13,9 @@ require 'stringio'
 # To call a method on the registered plugins, call plugman with a
 # method name matching 
 # 
-#   /^send_(before|after|at|.*_hook$)/
+#   /^signal_(before|after|at)/
 #
-# plugman will then call similar named (without send_) methods on all
+# plugman will then call similar named (without signal_) methods on all
 # plugins which responds to the method.
 #
 # === Example
@@ -33,11 +33,11 @@ require 'stringio'
 #     end
 #
 #     def main
-#       @pm.send_at_starup
+#       @pm.signal_at_starup
 #
 #       # ...
 #    
-#       @pm.send_before_bar
+#       @pm.signal_before_bar
 #     end
 #
 
@@ -71,8 +71,9 @@ class Plugman
 
   # Calls the 
   def method_missing(name, *arguments, &block)
-    if name.to_s =~ /^send_(before|after|at|.*_hook$)/
-      method = name.to_s[5..-1]
+    if name.to_s =~ /^signal_(before|after|at)/
+      method = name.to_s[7..-1]
+      @logger.debug("Sending #{method} to plugins")
       @plugins.select {|p| p.respond_to?(method)}.each do |p|
         p.send(method, *arguments)
       end
@@ -81,13 +82,13 @@ class Plugman
     end
   end
 
-  # FIX implement respond_to? to match method_missing?
-
-  private
-
   def register_plugin(klass)
     @plugins.push(klass.new)
   end
+
+  # FIX implement respond_to? to match method_missing?
+
+  private
 
   def finder=(finder_or_name)
     if finder_or_name.is_a?(String)
