@@ -6,11 +6,7 @@ Spec = Gem::Specification.new do |s|
 
   s.platform    = Gem::Platform::RUBY
   s.name        = 'plugman'
-  s.version     = begin
-                    v = '0.1'
-                    origin_master_commits = `git rev-list origin/master`.split("\n")
-                    v << '.' << origin_master_commits.length.to_s
-                  end
+  s.version     = '0.2'
   s.summary     = 'A plugin manager.'
   s.description = 'Plugman is a plugin manager that supports event driven communication with plugins. It handles the loading, initialization and all communications with the plugins.'
   s.homepage    = 'http://github.com/kjellm/plugman'
