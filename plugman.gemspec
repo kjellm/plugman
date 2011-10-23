@@ -18,7 +18,7 @@ Spec = Gem::Specification.new do |s|
 
   s.files = Dir.glob('lib/**/*.rb') + 
     Dir.glob('test/**/*.rb') + 
-    %w(Rakefile README.md COPYING)
+    %w(Rakefile README.md)
 
 end
 
