@@ -10,12 +10,13 @@ class Plugman
     def apply(plugin_files)
       approved = []
       plugin_files.each do |plugin|
-        if @white.include?(plugin)
+        basename = File.basename(plugin)
+        if @white.include?(basename)
           approved << plugin
           next
         end
-        next if @black.include?(plugin)
-        approved << plugin if @unknown_handler.call(plugin)
+        next if @black.include?(basename)
+        approved << plugin if @unknown_handler.call(basename)
       end  
       approved
     end

@@ -51,6 +51,7 @@ class Plugman
     @log = StringIO.new("")
     @logger = Logger.new(@log)
     Plugman::PluginBase.manager = self
+    @policy = Plugman::BlackWhitePolicy.new([], []) { |x| true } 
   end
 
   def log 
@@ -60,7 +61,7 @@ class Plugman
   # Looks for plugins, requires them, checks state, initializes, and
   # registers the plugins
   def load_plugins
-    @finder.plugin_files.each do |f|
+    @policy.apply(@finder.plugin_files).each do |f|
       require_plugin(f)
     end
 
