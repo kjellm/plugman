@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
 
   s.files = Dir.glob('lib/**/*.rb') + 
     Dir.glob('spec/**/*.rb') + 
-    %w(Rakefile README.md)
+    %w(Gemfile Rakefile README.md)
     
   s.add_development_dependency "bundler"
 
