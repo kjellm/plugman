@@ -1,11 +1,10 @@
 require 'plugman'
-require 'plugman/finder'
 
 describe Plugman do
 
   # Before each won't work because the plugins can only be required once per process. FIXME maybe a bug?
   before(:all) do
-    @plugman = Plugman.new(Plugman::Finder::Simple.new(File.dirname(__FILE__) + '/plugins'))
+    @plugman = Plugman.new(Plugman::SimpleFinder.new(File.dirname(__FILE__) + '/plugins'))
     @plugman.load_plugins
   end
 
@@ -22,9 +21,8 @@ describe Plugman do
     str.should =~ /WHIIIIIIIIIIZZZZZZZZ/
   end    
   
-  it "should fail when trying to signal an event no plugins can respond to" do
-    # FIXME: Bad decision? This will happen with every event when no plugins are loaded.
-    expect { @plugman.this_should_be_missing }.to raise_error(NoMethodError)
+  it "should not fail when trying to signal an event no plugins can respond to" do
+    expect { @plugman.signal_at_this_should_be_missing }.to_not raise_error
   end
 
 end

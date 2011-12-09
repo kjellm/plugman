@@ -1,6 +1,8 @@
 # encoding: utf-8
 
-require 'plugman/finder'
+require 'plugman/black_white_policy'
+require 'plugman/gem_finder'
+require 'plugman/simple_finder'
 require 'plugman/plugin_base'
 require 'logger'
 require 'stringio'
@@ -49,6 +51,7 @@ class Plugman
     @log = StringIO.new("")
     @logger = Logger.new(@log)
     Plugman::PluginBase.manager = self
+    @policy = Plugman::BlackWhitePolicy.new([], []) { |x| true } 
   end
 
   def log 
@@ -58,7 +61,7 @@ class Plugman
   # Looks for plugins, requires them, checks state, initializes, and
   # registers the plugins
   def load_plugins
-    @finder.plugin_files.each do |f|
+    @policy.apply(@finder.plugin_files).each do |f|
       require_plugin(f)
     end
 
@@ -91,12 +94,10 @@ class Plugman
   private
 
   def finder=(finder_or_name)
-    if finder_or_name.is_a?(String)
-      @finder = Finder::Standard.new(finder_or_name)
-    elsif finder_or_name.respond_to?(:plugin_files)
+    if finder_or_name.respond_to?(:plugin_files)
       @finder = finder_or_name
     else
-      raise ArgumentError 'Require a string or an object repsonding to plugin_files()'
+      @finder = Finder::Standard.new(finder_or_name)
     end
   end
 
