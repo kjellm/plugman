@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/kjellm/plugman.png)](http://travis-ci.org/kjellm/plugman)
+
 Plugman
 =======
 

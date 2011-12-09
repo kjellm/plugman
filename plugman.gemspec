@@ -17,10 +17,10 @@ Gem::Specification.new do |s|
   s.email       = 'kjellm@acm.org'
 
   s.files = Dir.glob('lib/**/*.rb') + 
-    Dir.glob('test/**/*.rb') + 
+    Dir.glob('spec/**/*.rb') + 
     %w(Rakefile README.md)
     
-  s.add_development_dependency "rspec"
+  s.add_development_dependency "bundler"
 
 end
 
