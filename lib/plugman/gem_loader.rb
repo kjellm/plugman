@@ -3,9 +3,9 @@ class Plugman
     attr_accessor :finder
     attr_reader :policy, :logger
 
-    def initialize(finder, policy, logger)
-      @finder  = finder
-      @policy  = policy
+    def initialize(finder_or_name, logger=Logger.new)
+      @finder  = get_finder(finder_or_name)
+      @policy  = Plugman::BlackWhitePolicy.new([], []) { |x| true }
       @logger  = logger
     end
 
@@ -26,6 +26,14 @@ class Plugman
       require f
     rescue => e
       logger.error(e.class.to_s + ": " + e.message)
+    end
+
+    def get_finder(finder_or_name)
+      if finder_or_name.respond_to?(:plugin_files)
+        finder_or_name
+      else
+        Finder::Standard.new(finder_or_name)
+      end
     end
   end
 end

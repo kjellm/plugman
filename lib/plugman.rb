@@ -4,6 +4,7 @@ require 'plugman/black_white_policy'
 require 'plugman/gem_finder'
 require 'plugman/simple_finder'
 require 'plugman/plugin_base'
+require 'plugman/gem_loader'
 require 'logger'
 require 'stringio'
 
@@ -13,8 +14,8 @@ require 'stringio'
 # communications with the plugins.
 #
 # To call a method on the registered plugins, call plugman with a
-# method name matching 
-# 
+# method name matching
+#
 #   /^signal_(before|after|at)/
 #
 # plugman will then call similar named (without signal_) methods on all
@@ -26,7 +27,7 @@ require 'stringio'
 # writing plugins, see link:Plugman/PluginBase.html
 #
 #   require 'plugman'
-#  
+#
 #   class YourApp
 #
 #     def initialize
@@ -38,41 +39,29 @@ require 'stringio'
 #       @pm.signal_at_starup
 #
 #       # ...
-#    
+#
 #       @pm.signal_before_bar
 #     end
 #
 
 class Plugman
 
-  def initialize(finder_or_name)
-    self.finder = finder_or_name
+  def initialize(loader, logger=Logger.new, loader_maker=GemLoader.method(:new))
+    # self.finder = finder_or_name
     @plugins = []
-    @log = StringIO.new("")
-    @logger = Logger.new(@log)
+    @logger  = logger
     Plugman::PluginBase.manager = self
-    @policy = Plugman::BlackWhitePolicy.new([], []) { |x| true } 
-  end
-
-  def log 
-    @log.string
+    @loader = loader || loader_maker.call(finder_or_name, @policy, @logger)
   end
 
   # Looks for plugins, requires them, checks state, initializes, and
   # registers the plugins
   def load_plugins
-    @policy.apply(@finder.plugin_files).each do |f|
-      require_plugin(f)
-    end
-
-    # All plugins are now registered. Requiering the plugins will
-    # magically call Plugman::Plugin::inherited for each
-    # plugin. inherited() will in turn call register_plugin()
-
+    @loader.load_plugins
     @plugins = @plugins.select {|p| p.state_ok? }
   end
 
-  # Calls the 
+  # Calls the
   def method_missing(name, *arguments, &block)
     if name.to_s =~ /^signal_(before|after|at)/
       method = name.to_s[7..-1]
@@ -93,20 +82,18 @@ class Plugman
 
   private
 
-  def finder=(finder_or_name)
-    if finder_or_name.respond_to?(:plugin_files)
-      @finder = finder_or_name
-    else
-      @finder = Finder::Standard.new(finder_or_name)
-    end
-  end
+  # def finder=(finder_or_name)
+  #   if finder_or_name.respond_to?(:plugin_files)
+  #     @finder = finder_or_name
+  #   else
+  #     @finder = Finder::Standard.new(finder_or_name)
+  #   end
+  # end
 
-  def require_plugin(f)
-    @logger.debug "Requiering #{f}"
-    require f
-  rescue => e
-    @logger.error(e.class.to_s + ": " + e.message)
-  end
-
-
+  # def require_plugin(f)
+  #   @logger.debug "Requiering #{f}"
+  #   require f
+  # rescue => e
+  #   @logger.error(e.class.to_s + ": " + e.message)
+  # end
 end
