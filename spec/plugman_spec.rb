@@ -2,13 +2,13 @@ require 'plugman'
 
 describe Plugman do
 
-  # Before each won't work because the plugins can only be required once per process. FIXME maybe a bug?
+  # Before each won't work because the plugins can only be required
+  # once per process. FIXME maybe a bug?
   before(:all) do
     @log      = StringIO.new("")
-    @logger   = Logger.new(@log)
-    finder    = Plugman::SimpleFinder.new(File.dirname(__FILE__) + '/plugins')
-    loader    = Plugman::GemLoader.new(finder, @logger)
-    @plugman  = Plugman.new(loader, @logger)
+    logger    = Logger.new(@log)
+    loader    = Plugman::DirLoader.new(logger, File.dirname(__FILE__) + '/plugins')
+    @plugman  = Plugman.new(loader, logger)
     @plugman.load_plugins
   end
 

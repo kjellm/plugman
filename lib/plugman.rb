@@ -1,12 +1,9 @@
 # encoding: utf-8
 
-require 'plugman/black_white_policy'
-require 'plugman/gem_finder'
-require 'plugman/simple_finder'
 require 'plugman/plugin_base'
-require 'plugman/gem_loader'
+require 'plugman/config_loader'
+require 'plugman/dir_loader'
 require 'logger'
-require 'stringio'
 
 #
 # Plugman is a plugin manager that supports event driven communication
@@ -40,12 +37,11 @@ require 'stringio'
 
 class Plugman
 
-  def initialize(loader, logger=Logger.new, loader_maker=GemLoader.method(:new))
-    # self.finder = finder_or_name
+  def initialize(loader, logger=Logger.new(STDERR))
     @plugins = []
     @logger  = logger
     Plugman::PluginBase.manager = self
-    @loader = loader_maker.call(@logger)
+    @loader = loader
   end
 
   def load_plugins
@@ -55,7 +51,7 @@ class Plugman
   def signal(message, *arguments, &block)
     @logger.debug("Sending #{message} to plugins")
     @plugins.select {|p| p.respond_to?(message)}.each do |p|
-      p.send(message, *arguments)
+      p.send(message, *arguments, &block)
     end
   end
 
