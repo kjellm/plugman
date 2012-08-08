@@ -30,7 +30,7 @@ require 'stringio'
 #     end
 #
 #     def main
-#       @pm.signal :at_starup
+#       @pm.signal :at_startup
 #
 #       # ...
 #
