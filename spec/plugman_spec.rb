@@ -19,14 +19,14 @@ describe Plugman do
 
   it "should send event signals to plugins" do
     str = ""
-    @plugman.signal_before_big_bang(str)
+    @plugman.signal :before_big_bang, str
 
     str.should =~ /WHOOOP/
     str.should =~ /WHIIIIIIIIIIZZZZZZZZ/
   end
 
-  it "should not fail when trying to signal an event no plugins can respond to" do
-    expect { @plugman.signal_at_this_should_be_missing }.to_not raise_error
+  it "should not fail when signaling an event no plugins can respond to" do
+    expect { @plugman.signal(:there_should_be_non_plugins_responding_to_this_event) }.to_not raise_error
   end
 
 end
