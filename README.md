@@ -75,66 +75,66 @@ Here's an example using the provided ConfigLoader:
     ---
     :plugins : ['app/plugin/logger']
     
-    ```ruby
-    # app/lib/app.rb
-    require 'plugman'
-    require 'yaml'
-    
-    class App
+```ruby
+# app/lib/app.rb
+require 'plugman'
+require 'yaml'
+
+class App
+
+  def initialize
+    rc = YAML.load_file("#{ENV['HOME']}/.app.yml")
+    @plugman = Plugman.new(loader: Plugman::ConfigLoader.new(rc[:plugins]))
+    @plugman.load_plugins
+  end
+  
+  def main
+    @plugman.notify :system_launched
+    # ...
+  end
+  
+end
+
+
+# app-plugin-logger/lib/app/plugin/logger.rb
+require 'logger'
+
+class App
+  module Plugin
+    class Logger < Plugman::PluginBase
     
       def initialize
-        rc = YAML.load_file("#{ENV['HOME']}/.app.yml")
-        @plugman = Plugman.new(loader: Plugman::ConfigLoader.new(rc[:plugins]))
-        @plugman.load_plugins
+        @logger = ::Logger.new(STDERR)
       end
-      
-      def main
-        @plugman.notify :system_launched
-        # ...
-      end
-      
-    end
-
-
-    # app-plugin-logger/lib/app/plugin/logger.rb
-    require 'logger'
     
-    class App
-      module Plugin
-        class Logger < Plugman::PluginBase
-        
-          def initialize
-            @logger = ::Logger.new(STDERR)
-          end
-        
-          def system_launched
-            @logger.info "The system has launched!"
-          end
-            
-        end
+      def system_launched
+        @logger.info "The system has launched!"
       end
+        
     end
-    ```
+  end
+end
+```
 
 ### Passing extra information to the plugins when you notify them about events
 
 Plugman lets you send arguments and/or blocks to plugins when calling #notify.
 Here is how it works:
 
-    ```ruby
-    # In a plugin:
-    def hello(world="")
-        str = "Hello" << world
-        str << yield if block_given?
-        puts str
-    end
+```ruby
+# In a plugin:
+def hello(world="")
+    str = "Hello" << world
+    str << yield if block_given?
+    puts str
+end
 
-    # Somewhere in the app:
-    @plugman.notify(:hello)                    # => "Hello"
-    @plugman.notify(:hello, " world")          # => "Hello world"
-    @plugman.notify(:hello, " world") { "!" }  # => "Hello world!"
-    @plugman.notify(:hello) { "!" }            # => "Hello!"
-    ```
+# Somewhere in the app:
+@plugman.notify(:hello)                    # => "Hello"
+@plugman.notify(:hello, " world")          # => "Hello world"
+@plugman.notify(:hello, " world") { "!" }  # => "Hello world!"
+@plugman.notify(:hello) { "!" }            # => "Hello!"
+```
 
 ### Creating your own loader
 
@@ -143,22 +143,22 @@ callable object (it responds to #call.)
 
 Here is one that loads all ruby files in a directory:
 
-    ```ruby
-    ->(a) { Dir.glob('/plugins/are/here/*.rb').each {|f| require f}}
-    ```
+```ruby
+->(a) { Dir.glob('/plugins/are/here/*.rb').each {|f| require f}}
+```
 
 And here is one that uses Gem.find_files
 
-    ```ruby
-    ->(a) do
-      seen = {}
-      Gem.find_files('the_app/plugin/*', true).each do |f|
-        name = File.basename(f)
-        require name unless seen[f]
-        seen[f] = true
-      end
-    end
-    ```
+```ruby
+->(a) do
+  seen = {}
+  Gem.find_files('the_app/plugin/*', true).each do |f|
+    name = File.basename(f)
+    require name unless seen[f]
+    seen[f] = true
+  end
+end
+```
 
 
 Bugs
