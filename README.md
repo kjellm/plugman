@@ -9,7 +9,7 @@ communications with the plugins.
 Why use plugman?
 ----------------
 
-Plagman's event driven approach lets you completely decouple the
+Plugman's event driven approach lets you completely decouple the
 application from the plugins. This is in my opinion a major advantage
 because it lets you factor out functionality into plugins without much
 added complexity.
@@ -35,6 +35,7 @@ Usage
 
 ### Minimal Example
 
+    ```ruby
     require 'plugman'
 
     class APlugin
@@ -56,6 +57,7 @@ Usage
       end
 
     end
+    ```
 
 ### Using a Loader to load plugins
 
@@ -73,7 +75,7 @@ Here's an example using the provided ConfigLoader:
     ---
     :plugins : ['app/plugin/logger']
     
-
+    ```ruby
     # app/lib/app.rb
     require 'plugman'
     require 'yaml'
@@ -112,13 +114,14 @@ Here's an example using the provided ConfigLoader:
         end
       end
     end
-
+    ```
 
 ### Passing extra information to the plugins when you notify them about events
 
 Plugman lets you send arguments and/or blocks to plugins when calling #notify.
 Here is how it works:
 
+    ```ruby
     # In a plugin:
     def hello(world="")
         str = "Hello" << world
@@ -131,7 +134,7 @@ Here is how it works:
     @plugman.notify(:hello, " world")          # => "Hello world"
     @plugman.notify(:hello, " world") { "!" }  # => "Hello world!"
     @plugman.notify(:hello) { "!" }            # => "Hello!"
-  
+    ```
 
 ### Creating your own loader
 
@@ -140,10 +143,13 @@ callable object (it responds to #call.)
 
 Here is one that loads all ruby files in a directory:
 
+    ```ruby
     ->(a) { Dir.glob('/plugins/are/here/*.rb').each {|f| require f}}
+    ```
 
 And here is one that uses Gem.find_files
 
+    ```ruby
     ->(a) do
       seen = {}
       Gem.find_files('the_app/plugin/*', true).each do |f|
@@ -152,6 +158,7 @@ And here is one that uses Gem.find_files
         seen[f] = true
       end
     end
+    ```
 
 
 Bugs
