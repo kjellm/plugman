@@ -35,29 +35,29 @@ Usage
 
 ### Minimal Example
 
-    ```ruby
-    require 'plugman'
+```ruby
+require 'plugman'
 
-    class APlugin
-     
-      def hello_world
-        puts "Hello World!"
-      end
-          
-    end
-
-    class TheApp
-
-      def initialize
-        @plugman = Plugman.new(plugins: [APlugin.new])
-      end
+class APlugin
+ 
+  def hello_world
+    puts "Hello World!"
+  end
       
-      def main
-        @plugman.notify :hello_world
-      end
+end
 
-    end
-    ```
+class TheApp
+
+  def initialize
+    @plugman = Plugman.new(plugins: [APlugin.new])
+  end
+  
+  def main
+    @plugman.notify :hello_world
+  end
+
+end
+```
 
 ### Using a Loader to load plugins
 
@@ -71,9 +71,11 @@ handle all this.
 
 Here's an example using the provided ConfigLoader:
 
-    # $HOME/.app.yml
-    ---
-    :plugins : ['app/plugin/logger']
+```yaml
+# $HOME/.app.yml
+---
+:plugins : ['app/plugin/logger']
+```
     
 ```ruby
 # app/lib/app.rb
@@ -94,8 +96,9 @@ class App
   end
   
 end
+```
 
-
+```ruby
 # app-plugin-logger/lib/app/plugin/logger.rb
 require 'logger'
 
