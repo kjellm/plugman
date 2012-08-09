@@ -1,15 +1,21 @@
-require 'plugman/loader'
-
 class Plugman
-  class ConfigLoader < Loader
+  class ConfigLoader
 
-    def initialize(logger, config)
-      super(logger)
+    def initialize(config)
       @config = config
     end
 
-    def load_plugins
-      @config.each { |f| require_plugin(f) }
+    def call(logger)
+      @config.each { |f| require_plugin(logger, f) }
+    end
+
+    private
+    
+    def require_plugin(logger, f)
+      logger.info "Requiering #{f}"
+      require f
+    rescue => e
+      logger.error(e.class.to_s + ": " + e.message)
     end
 
   end

@@ -6,27 +6,52 @@ describe Plugman do
   # once per process. FIXME maybe a bug?
   before(:all) do
     @log      = StringIO.new("")
-    logger    = Logger.new(@log)
-    loader    = Plugman::DirLoader.new(logger, File.dirname(__FILE__) + '/plugins')
-    @plugman  = Plugman.new(loader, logger)
+    loader    = ->(a) { Dir.glob(File.dirname(__FILE__) + '/plugins/*').each {|f| require f}}
+    @plugman  = Plugman.new(loader: loader, logger: Logger.new(@log))
     @plugman.load_plugins
   end
 
-  it "should log a message when loading a plugin" do
-    @log.string.should =~ /Requiering.*plugins\/bar.rb/
-    @log.string.should =~ /Requiering.*plugins\/baz.rb/
-  end
-
-  it "should send event signals to plugins" do
+  it "should send events to plugins" do
     str = ""
-    @plugman.signal :before_big_bang, str
+    @plugman.notify :before_big_bang, str
 
     str.should =~ /WHOOOP/
     str.should =~ /WHIIIIIIIIIIZZZZZZZZ/
   end
 
+  context "different arguments to #notify" do
+    it "should handle no arguments" do
+      str = ""
+      @plugman.notify :reset_hello, str
+      @plugman.notify :hello
+      str.should == "Hello"
+    end
+
+    it "should pass on arguments" do
+      str = ""
+      @plugman.notify :reset_hello, str
+      @plugman.notify :hello, " world"
+      str.should  == "Hello world"
+    end
+
+    it "should pass on arguments and block" do
+      str = ""
+      @plugman.notify :reset_hello, str
+      @plugman.notify(:hello, " world") { "!" }
+      str.should  == "Hello world!"
+    end
+
+    it "should pass on block" do
+      str = ""
+      @plugman.notify :reset_hello, str
+      @plugman.notify(:hello) { "!" } 
+      str.should  == "Hello!"
+    end
+
+  end
+
   it "should not fail when signaling an event no plugins can respond to" do
-    expect { @plugman.signal(:there_should_be_non_plugins_responding_to_this_event) }.to_not raise_error
+    expect { @plugman.notify(:there_should_be_non_plugins_responding_to_this_event) }.to_not raise_error
   end
 
 end

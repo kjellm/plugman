@@ -1,62 +1,46 @@
 # encoding: utf-8
 
-require 'plugman/plugin_base'
-require 'plugman/config_loader'
-require 'plugman/dir_loader'
 require 'logger'
-
-#
-# Plugman is a plugin manager that supports event driven communication
-# with plugins. It handles the loading, initialization and all
-# communications with the plugins.
-#
-# To notify plugins about an event, call plugman's #signal method
-#
-# === Example
-#
-# Put some plugins in lib/your_app/plugin/. For documentation on
-# writing plugins, see link:Plugman/PluginBase.html
-#
-#   require 'plugman'
-#
-#   class YourApp
-#
-#     def initialize
-#       @pm = Plugman.new('your_app')
-#       @pm.load_plugins
-#     end
-#
-#     def main
-#       @pm.signal :at_startup
-#
-#       # ...
-#
-#       @pm.signal :before_bar
-#     end
-#
+require 'plugman/config_loader'
+require 'plugman/plugin_base'
 
 class Plugman
 
-  def initialize(loader, logger=Logger.new(STDERR))
-    @plugins = []
-    @logger  = logger
+  def initialize(args)
     Plugman::PluginBase.manager = self
-    @loader = loader
+
+    @plugins = args[:plugins] || []
+    @logger  = args[:logger]
+    @loader  = args[:loader]
+
+    if @logger.nil?
+      @logger = Logger.new(STDERR)
+      @logger.level = Logger::WARN
+    end
   end
 
   def load_plugins
-    @loader.load_plugins
+    @loader.call(@logger)
   end
 
-  def signal(message, *arguments, &block)
-    @logger.debug("Sending #{message} to plugins")
-    @plugins.select {|p| p.respond_to?(message)}.each do |p|
-      p.send(message, *arguments, &block)
+  def notify(event, *arguments, &block)
+    @logger.debug("Sending #{event} to plugins")
+    @plugins.select {|p| p.respond_to?(event)}.each do |p|
+      notify_plugin(p, event, *arguments, &block)
     end
+    true
   end
 
   def register_plugin(klass)
     @plugins.push(klass.new)
+  end
+
+  private 
+
+  def notify_plugin(plugin, event, *arguments, &block)
+    plugin.send(event, *arguments, &block)
+  rescue e
+    @logger.error(e)
   end
 
 end
