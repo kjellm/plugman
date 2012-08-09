@@ -5,7 +5,6 @@ require "plugman/version"
 Gem::Specification.new do |s|
 
   s.required_ruby_version     = '>= 1.9.2'
-  s.required_rubygems_version = ">= 1.4.0"
 
   s.name        = 'plugman'
   s.platform    = Gem::Platform::RUBY
@@ -14,7 +13,7 @@ Gem::Specification.new do |s|
   s.description = 'Plugman is a plugin manager that supports event driven communication with plugins. It handles the loading, initialization and all communications with the plugins.'
   s.homepage    = 'http://github.com/kjellm/plugman'
   s.author      = 'Kjell-Magne Øierud'
-  s.email       = 'kjellm@acm.org'
+  s.email       = 'kjellm@oierud.net'
 
   s.files = Dir.glob('lib/**/*.rb') + 
     Dir.glob('spec/**/*.rb') + 
