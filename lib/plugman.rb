@@ -31,6 +31,7 @@ class Plugman
     true
   end
 
+  # Called from Plugman::PluginBase when inherited
   def register_plugin(klass)
     @plugins.push(klass.new)
   end

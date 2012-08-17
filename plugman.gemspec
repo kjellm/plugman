@@ -7,7 +7,6 @@ Gem::Specification.new do |s|
   s.required_ruby_version     = '>= 1.9.2'
 
   s.name        = 'plugman'
-  s.platform    = Gem::Platform::RUBY
   s.version     = Plugman::VERSION
   s.summary     = 'A plugin manager.'
   s.description = 'Plugman is a plugin manager that supports event driven communication with plugins. It handles the loading, initialization and all communications with the plugins.'
@@ -17,9 +16,7 @@ Gem::Specification.new do |s|
 
   s.files = Dir.glob('lib/**/*.rb') + 
     Dir.glob('spec/**/*.rb') + 
-    %w(Gemfile Rakefile README.md)
+    %w(CHANGES Gemfile README.md Rakefile)
     
-  s.add_development_dependency "bundler"
-
 end
 

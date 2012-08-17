@@ -1,0 +1,26 @@
+2012-08-17: version 1.0
+
+ - Special thanks to Avid Grim <http://avdi.org> for valuable input
+
+ - Big rewrite.
+
+ - By default it no longer uses Rubygems to automatically find all
+   plugins matching a pattern. You need instead to provide a list with
+   the names of the plugins that you want to load.
+
+ - The plugman initializer has changed it's parameters.
+
+ - You now notify plugins when events happens via Plugman's
+   #notify. The old mechanism is deprecated.
+
+ - Added a lot of documentation to the README
+
+ - Changed to MIT license
+
+2011-06-01: version 0.1.1
+
+ - Made Finder::Standard the default
+
+2011-05-30: version 0.1
+
+ - Initial release
