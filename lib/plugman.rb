@@ -40,7 +40,7 @@ class Plugman
 
   def notify_plugin(plugin, event, *arguments, &block)
     plugin.send(event, *arguments, &block)
-  rescue e
+  rescue Exception => e
     @logger.error(e)
   end
 
