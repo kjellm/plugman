@@ -1,6 +1,10 @@
+2013-03-07: version 1.0.1
+
+ - Fixed a syntax error in handling of exceptions raised by plugins.
+
 2012-08-17: version 1.0
 
- - Special thanks to Avid Grim <http://avdi.org> for valuable input
+ - Special thanks to Avdi Grim <http://avdi.org> for valuable input
 
  - Big rewrite.
 
