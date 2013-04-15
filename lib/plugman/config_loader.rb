@@ -2,7 +2,7 @@ class Plugman
   class ConfigLoader
 
     def initialize(config)
-      @config = config
+      @config = config || []
     end
 
     def call(logger)
